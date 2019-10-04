@@ -2,10 +2,20 @@
 # fields for name, lat and lon (representing latitude and longitude).
 
 
+class City:
+    def __init__(self, name, lat, lon):
+        self.name = name
+        self.lat = lat
+        self.lon = lon
+
+    def __str__(self):
+        return f'City name: {self.name}, Lat: {self.lat}, Lon: {self.lon}'
+
+
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
 #
-# In the body of the `cityreader` function, use Python's built-in "csv" module 
+# In the body of the `cityreader` function, use Python's built-in "csv" module
 # to read this file so that each record is imported into a City instance. Then
 # return the list with all the City instances from the function.
 # Google "python 3 csv" for references and use your Google-fu for other examples.
@@ -16,12 +26,20 @@
 # should not be loaded into a City object.
 cities = []
 
+
 def cityreader(cities=[]):
-  # TODO Implement the functionality to read from the 'cities.csv' file
-  # For each city record, create a new City instance and add it to the 
-  # `cities` list
-    
+    # TODO Implement the functionality to read from the 'cities.csv' file
+    # For each city record, create a new City instance and add it to the
+    # `cities` list
+    with open('cities.csv', newline='') as csvfile:
+        for index, city in enumerate(csvfile):
+            if index > 0:
+                cityList = city.split(',')
+                # print(cityList[0], cityList[3], cityList[4])
+                cities.append(City(cityList[0], cityList[3], cityList[4]))
+
     return cities
+
 
 cityreader(cities)
 
@@ -32,10 +50,10 @@ for c in cities:
 # STRETCH GOAL!
 #
 # Allow the user to input two points, each specified by latitude and longitude.
-# These points form the corners of a lat/lon square. Pass these latitude and 
+# These points form the corners of a lat/lon square. Pass these latitude and
 # longitude values as parameters to the `cityreader_stretch` function, along
 # with the `cities` list that holds all the City instances from the `cityreader`
-# function. This function should output all the cities that fall within the 
+# function. This function should output all the cities that fall within the
 # coordinate square.
 #
 # Be aware that the user could specify either a lower-left/upper-right pair of
@@ -60,12 +78,42 @@ for c in cities:
 
 # TODO Get latitude and longitude values from the user
 
+lat1 = input('enter latitude of first point:  ')
+lon1 = input('enter longitude of first point:  ')
+lat2 = input('enter latitude of second point:  ')
+lon1 = input('enter longitude of second point:  ')
+
+
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-  # within will hold the cities that fall within the specified region
-  within = []
+    # within will hold the cities that fall within the specified region
+    within = []
+    if (lat1 > lat2):
+        lat_bigger = lat1
+        lat_lesser = lat2
+    else:
+        lat_bigger = lat2
+        lat_lesser = lat1
 
-  # TODO Ensure that the lat and lon valuse are all floats
-  # Go through each city and check to see if it falls within 
-  # the specified coordinates.
+    if (lon1 > lon2):
+        lon_bigger = lon1
+        lon_lesser = lon2
+    else:
+        lon_bigger = lon2
+        lon_lesser = lon1
 
-  return within
+    # TODO Ensure that the lat and lon valuse are all floats
+    # Go through each city and check to see if it falls within
+    # the specified coordinates.
+    if isinstance(lat1, float) and isinstance(lat2, float) and isinstance(lon1, float) and isinstance(lon2, float):
+        with open('cities.csv', newline='') as csvfile:
+            for index, city in enumerate(csvfile):
+                if index > 0:
+                    cityList = city.split(',')
+                    for city in cityList:
+
+                        if city[3] <= lat_bigger and city[3] >= lat_lesser and city[4] >= lon_lesser and city[4] <= lon_bigger:
+                            within.append(city)
+    else:
+        return f'Please enter proper coordinates'
+    print(within)
+    return within
